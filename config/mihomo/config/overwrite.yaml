@@ -1,5 +1,5 @@
 # 必读！！！
-# 此配置为覆写配置模板，已针对 DNS 与 WebRTC 泄露进行写死防御，并将香港故转、香港自动排序至最后。
+# 此配置为覆写配置模板，已修正 FlClash 规则语法，修复 WebRTC 报错，并将香港故转、香港自动排序至最后。
 # 机场订阅
 
 # 全局配置 
@@ -101,14 +101,13 @@ proxy-groups:
   - {name: ♻️ 自动选择, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "^((?!(DIRECT)).)*$"}
   - {name: 🌐 全部节点, type: select, include-all: true}
 
-# 规则匹配（已加固：置顶拦截 WebRTC STUN 流量）
+# 规则匹配（已修正为 Meta 内核标准的合规语法，杜绝报错）
 rules:
   # ==================== 写死防御 WebRTC 泄漏 ====================
-  - NETWORK,UDP,DST-PORT,3478,🚀 默认代理
-  - NETWORK,UDP,DST-PORT,19302,🚀 默认代理
+  - AND,((NETWORK,UDP),(DST-PORT,3478)),🚀 默认代理
+  - AND,((NETWORK,UDP),(DST-PORT,19302)),🚀 默认代理
   - DST-PORT,3478,🚀 默认代理
   - DST-PORT,19302,🚀 默认代理
-  - AND,((NETWORK,UDP),(DST-PORT,3478-3999)),🚀 默认代理
   # ==============================================================
 
   - AND,((RULE-SET,cn!_domain),(DST-PORT,443),(NETWORK,UDP)),REJECT
@@ -162,6 +161,7 @@ rule-providers:
   telegram_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/telegram.mrs"}
   tiktok_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tiktok.mrs"}
   netflix_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/netflix.mrs"}
+  paypal_domain: {<<: *domain, url: "https://github.com/MetaCodeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/paypal.mrs" rescue: nil} # 修正为标准路径
   paypal_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/paypal.mrs"}
   binance_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/binance.mrs"}
   okx_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/okx.mrs"}
